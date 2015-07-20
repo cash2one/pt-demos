@@ -11,18 +11,37 @@
 """
 
 import sys
-from time import sleep
+from time import sleep, time, ctime
 from urllib2 import urlopen
+from argparse import ArgumentParser
+
+
 from selenium import webdriver
 
 
+
+
+def parse_args():
+    parser = ArgumentParser(description='download baimeidaxia from 5tps.com. python xxx.py 60 70 means [61, 62, ..., 70]')
+    parser.add_argument("start", metavar='START', type=int, help="the start episode. no-inclusive. ")
+    parser.add_argument("end", metavar='END', type=int, help="the end episode(inclusive).")
+    
+    args = parser.parse_args()
+    return args
         
-def main():
+def main(args):
     
     driver = webdriver.Chrome()
 
-    for i in range(6, 10):
+    for i in range(args.start, args.end):
         idx = i + 1
+        s_time = time()
+        
+        out_file = '5tps.com_单田芳_白眉大侠_%03d.mp3' % idx
+        print "%s -- downloading %s..." % (ctime(s_time), out_file)
+        sys.stdout.flush()
+        
+        
         # 'http://www.5tps.com/down/10678_47_1_1.html'
         # 'http://www.5tps.com/down/10678_47_1_320.html'
         url = 'http://www.5tps.com/down/10678_47_1_%d.html'
@@ -35,17 +54,17 @@ def main():
         # <a href="http://dxpse-d.ysx8.net:8000/单田芳/单田芳_白眉大侠320清晰/5tps.com_单田芳_白眉大侠_001.mp3?60023422909419x1420949202x60023885522173-61784622818271489815261?3" id="p3163321532"><font color="blue">点此下载《白眉大侠(全320回)高清版》第1回</font></a>
         ele = elements[0]
         href = ele.get_attribute('href')
-        print href
-        out_file = '5tps.com_单田芳_白眉大侠_%03d.mp3' % idx
-        print "downloading %s..." % out_file
-        sys.stdout.flush()
-        
         fh = open(out_file.decode('utf8').encode('gbk'), 'wb')
         fh.write(urlopen(href).read())
         fh.close()
 
-
+        e_time = time()
+        delta = e_time - s_time
+        print "%s -- download with %.1f seconds for %s" % (ctime(e_time), delta, href)
+        sys.stdout.flush()
+        
         
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    main(args)
