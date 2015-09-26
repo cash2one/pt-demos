@@ -1,0 +1,25 @@
+{
+  "name" : "美丽说运营小工具",
+  "version" : "1.0.1",
+  "description" : "美丽说运营小工具",
+  "permissions" : [
+    "contextMenus",
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+   ],
+  "minimum_chrome_version" : "6.0.0.0",
+  "icons" : {
+    "16" : "icon36.png",
+    "48" : "icon36.png",
+    "128" : "icon36.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*"],
+      "js": ["jquery.js", "main.js"]
+    }
+  ],
+  "background" : { "scripts": ["background.js"] },
+  "manifest_version": 2
+}
